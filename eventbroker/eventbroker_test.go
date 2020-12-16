@@ -1,4 +1,4 @@
-package event
+package eventbroker
 
 import (
 	"testing"

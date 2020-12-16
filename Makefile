@@ -13,6 +13,7 @@ test:
 	@echo "Running all tests"
 	go clean -testcache
 	go test -v github.com/istherepie/push-notifications/eventbroker
+	go test -v github.com/istherepie/push-notifications/cmd/notification-server/webserver
 
 build:
 	@echo "Building binaries"

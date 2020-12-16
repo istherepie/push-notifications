@@ -1,0 +1,16 @@
+# macos
+.DS_Store
+
+# development
+.idea
+.vscode
+.notes
+
+# cd/ci
+build
+dist
+*.tar.gz
+sha256-checksum.txt
+
+# misc
+*.log

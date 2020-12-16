@@ -27,19 +27,19 @@ func (b *Broker) Init() {
 	b.subscriptions = make(map[*Subscription]struct{})
 }
 
-func (b *Broker) addSub(subscription *Subscription) {
+func (b *Broker) addSub(sub *Subscription) {
 	b.mtx.Lock()
 	defer b.mtx.Unlock()
 
 	var empty struct{}
-	b.subscriptions[subscription] = empty
+	b.subscriptions[sub] = empty
 }
 
-func (b *Broker) remSub(subscription *Subscription) {
+func (b *Broker) remSub(sub *Subscription) {
 	b.mtx.Lock()
 	defer b.mtx.Unlock()
-	close(subscription.listener)
-	delete(b.subscriptions, subscription)
+	close(sub.listener)
+	delete(b.subscriptions, sub)
 }
 
 func (b *Broker) waitForClose(sub *Subscription) {
@@ -68,8 +68,8 @@ func (b *Broker) GetSubs() []*Subscription {
 
 	var subscribers []*Subscription
 
-	for subscriber := range b.subscriptions {
-		subscribers = append(subscribers, subscriber)
+	for sub := range b.subscriptions {
+		subscribers = append(subscribers, sub)
 	}
 
 	return subscribers

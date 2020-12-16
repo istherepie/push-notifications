@@ -11,6 +11,8 @@ all: testing clean build
 
 test:
 	@echo "Running all tests"
+	go clean -testcache
+	go test -v github.com/istherepie/push-notifications/eventbroker
 
 build:
 	@echo "Building binaries"

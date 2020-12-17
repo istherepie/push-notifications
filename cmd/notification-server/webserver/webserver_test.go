@@ -26,6 +26,10 @@ func Setup(t *testing.T) *eventbroker.Broker {
 		EventHook:     hook,
 	}
 
+	go broker.Run()
+
+	t.Cleanup(func() { broker.Close() })
+
 	return broker
 }
 
@@ -73,11 +77,8 @@ func TestMessageHandler(t *testing.T) {
 
 	// Run handler
 	broker := Setup(t)
-	go broker.Run()
 	handler := Mux(broker)
 	handler.ServeHTTP(rec, req)
-
-	broker.Close()
 
 	// Test
 	if rec.Code != http.StatusNoContent {

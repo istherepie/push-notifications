@@ -4,14 +4,31 @@ import (
 	"testing"
 )
 
-func TestSubscriberCount(t *testing.T) {
-	broker := Broker{}
-	broker.Init()
+func Setup(t *testing.T) *Broker {
 
-	broker.Subscribe()
+	hookHandler := func(event int) {}
+
+	broker := &Broker{
+		Subscriptions: make(map[*Subscription]struct{}),
+		Register:      make(chan *Subscription),
+		Unregister:    make(chan *Subscription),
+		MessageQueue:  make(chan string),
+		EventHook:     hookHandler,
+	}
+
+	go broker.Run()
+
+	return broker
+}
+
+func TestSubscriberCount(t *testing.T) {
+	broker := Setup(t)
+
+	sub := broker.Subscribe()
+	defer sub.Close()
 
 	// Count subs
-	result := broker.CountSubs()
+	result := len(broker.Subscriptions)
 
 	// Expecting 1 sub
 	expected := 1
@@ -22,8 +39,7 @@ func TestSubscriberCount(t *testing.T) {
 }
 
 func TestAddAndRemoveSubs(t *testing.T) {
-	broker := Broker{}
-	broker.Init()
+	broker := Setup(t)
 
 	// Create 4 subs
 	sub1 := broker.Subscribe()
@@ -38,13 +54,14 @@ func TestAddAndRemoveSubs(t *testing.T) {
 	sub4.Close()
 
 	// Wait for all to close
+	// (They should be closed when de-registered)
 	<-sub1.Next()
 	<-sub2.Next()
 	<-sub3.Next()
 	<-sub4.Next()
 
 	// Count subs
-	result := broker.CountSubs()
+	result := len(broker.Subscriptions)
 
 	// Expecting 1 sub
 	expected := 0
@@ -56,10 +73,10 @@ func TestAddAndRemoveSubs(t *testing.T) {
 
 func TestEventNotification(t *testing.T) {
 
-	broker := Broker{}
-	broker.Init()
+	broker := Setup(t)
 
 	sub := broker.Subscribe()
+	defer sub.Close()
 
 	// Fixtures
 	testmessages := []string{

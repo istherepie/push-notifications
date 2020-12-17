@@ -1,105 +1,81 @@
 package eventbroker
 
-import (
-	"sync"
-	"time"
-)
+import "time"
 
 type Subscription struct {
-	listener chan string
 	quit     chan struct{}
+	incoming chan string
 }
 
-func (s *Subscription) Next() <-chan string {
-	return s.listener
+func (c *Subscription) Close() {
+	close(c.quit)
 }
 
-func (s *Subscription) Close() {
-	close(s.quit)
+func (c *Subscription) Next() <-chan string {
+	return c.incoming
 }
 
 type Broker struct {
-	subscriptions map[*Subscription]struct{}
-	mtx           sync.RWMutex
+	Subscriptions map[*Subscription]struct{}
+	Register      chan *Subscription
+	Unregister    chan *Subscription
+	MessageQueue  chan string
+	EventHook     func(status int)
 }
 
-func (b *Broker) Init() {
-	b.subscriptions = make(map[*Subscription]struct{})
+func (b *Broker) WaitForClose(sub *Subscription) {
+	select {
+	case <-sub.quit:
+		b.Unregister <- sub
+		return
+	}
 }
 
-func (b *Broker) addSub(sub *Subscription) {
-	b.mtx.Lock()
-	defer b.mtx.Unlock()
-
-	var empty struct{}
-	b.subscriptions[sub] = empty
-}
-
-func (b *Broker) remSub(sub *Subscription) {
-	b.mtx.Lock()
-	defer b.mtx.Unlock()
-	close(sub.listener)
-	delete(b.subscriptions, sub)
-}
-
-func (b *Broker) waitForClose(sub *Subscription) {
-	<-sub.quit
-	b.remSub(sub)
+func (b *Broker) Publish(message string) {
+	b.MessageQueue <- message
 }
 
 func (b *Broker) Subscribe() *Subscription {
 
-	subscription := &Subscription{
-		listener: make(chan string, 1),
+	sub := &Subscription{
 		quit:     make(chan struct{}),
+		incoming: make(chan string),
 	}
 
-	b.addSub(subscription)
-
-	// Remove when closed
-	go b.waitForClose(subscription)
-
-	return subscription
+	b.Register <- sub
+	return sub
 }
 
-func (b *Broker) GetSubs() []*Subscription {
-	b.mtx.RLock()
-	defer b.mtx.RUnlock()
+func (b *Broker) Broadcast(message string) {
 
-	var subscribers []*Subscription
-
-	for sub := range b.subscriptions {
-		subscribers = append(subscribers, sub)
-	}
-
-	return subscribers
-}
-
-func (b *Broker) CountSubs() int {
-	b.mtx.RLock()
-	defer b.mtx.RUnlock()
-	return len(b.subscriptions)
-}
-
-func (b *Broker) Publish(message string) {
-
-	if b.CountSubs() == 0 {
-		return
-	}
-
-	broadcast := func(sub *Subscription, message string) {
+	transmit := func(sub *Subscription, message string) {
 		select {
-		case sub.listener <- message:
+		case sub.incoming <- message:
 			return
-
 		// TODO: The timeout should be configurable
-		case <-time.After(300 * time.Millisecond):
+		case <-time.After(1500 * time.Millisecond):
 			return
 		}
 	}
 
-	for _, subscription := range b.GetSubs() {
-		go broadcast(subscription, message)
+	for sub := range b.Subscriptions {
+		go transmit(sub, message)
 	}
+}
 
+func (b *Broker) Run() {
+	for {
+		select {
+		case sub := <-b.Register:
+			var empty struct{}
+			b.Subscriptions[sub] = empty
+			b.EventHook(1)
+		case sub := <-b.Unregister:
+			delete(b.Subscriptions, sub)
+			b.EventHook(2)
+		case message := <-b.MessageQueue:
+			b.Broadcast(message)
+			b.EventHook(3)
+		}
+	}
 }

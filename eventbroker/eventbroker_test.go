@@ -28,7 +28,7 @@ func TestSubscriberCount(t *testing.T) {
 	defer sub.Close()
 
 	// Count subs
-	result := len(broker.Subscriptions)
+	result := broker.CountSubs()
 
 	// Expecting 1 sub
 	expected := 1
@@ -61,7 +61,7 @@ func TestAddAndRemoveSubs(t *testing.T) {
 	<-sub4.Next()
 
 	// Count subs
-	result := len(broker.Subscriptions)
+	result := broker.CountSubs()
 
 	// Expecting 1 sub
 	expected := 0

@@ -1,6 +1,9 @@
 package eventbroker
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 type Subscription struct {
 	quit     chan struct{}
@@ -16,6 +19,7 @@ func (c *Subscription) Next() <-chan string {
 }
 
 type Broker struct {
+	mtx           sync.RWMutex
 	Subscriptions map[*Subscription]struct{}
 	Register      chan *Subscription
 	Unregister    chan *Subscription
@@ -59,22 +63,35 @@ func (b *Broker) Broadcast(message string) {
 		}
 	}
 
+	b.mtx.RLock()
 	for sub := range b.Subscriptions {
 		go transmit(sub, message)
 	}
+
+	b.mtx.RUnlock()
+}
+
+func (b *Broker) CountSubs() int {
+	b.mtx.RLock()
+	defer b.mtx.RUnlock()
+	return len(b.Subscriptions)
 }
 
 func (b *Broker) Run() {
 	for {
 		select {
 		case sub := <-b.Register:
+			b.mtx.Lock()
 			var empty struct{}
 			b.Subscriptions[sub] = empty
+			b.mtx.Unlock()
 			go b.WaitForClose(sub)
 			b.EventHook(1)
 		case sub := <-b.Unregister:
 			close(sub.incoming)
+			b.mtx.Lock()
 			delete(b.Subscriptions, sub)
+			b.mtx.Unlock()
 			b.EventHook(2)
 		case message := <-b.MessageQueue:
 			b.Broadcast(message)

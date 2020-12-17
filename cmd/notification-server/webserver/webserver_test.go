@@ -106,3 +106,59 @@ func TestNotificationsHandler(t *testing.T) {
 		t.Errorf("Incorrect status code, got %v want %v", rec.Code, http.StatusOK)
 	}
 }
+
+type StreamRecorder struct {
+	*httptest.ResponseRecorder
+}
+
+func (s *StreamRecorder) Reset() {
+	s.Body = new(bytes.Buffer)
+	s.Flushed = false
+}
+
+func (s *StreamRecorder) WaitForFlush() {
+	for !s.Flushed {
+		// Do nothing
+	}
+}
+
+func TestNotificationMessages(t *testing.T) {
+
+	req, _ := http.NewRequest("GET", "/notifications", nil)
+
+	// Need a custom recorder
+	// the response writer buffer is not flushed before the method exits
+	rec := &StreamRecorder{httptest.NewRecorder()}
+
+	broker := Setup(t)
+
+	waitForRegistration := make(chan int)
+	broker.EventHook = func(status int) {
+
+		if status == 1 {
+			waitForRegistration <- status
+			return
+		}
+	}
+
+	mux := NotificationHandler{broker}
+
+	go mux.ServeHTTP(rec, req)
+
+	<-waitForRegistration
+
+	// Pass message into the loop
+	broker.Publish("this is a test message")
+
+	// Wait buffer to be flushed
+	rec.WaitForFlush()
+
+	expected := "data: this is a test message\n\n"
+
+	// Test
+	if rec.Body.String() != expected {
+		t.Error("NOTIFICATION ERROR")
+		t.Log("GOT", rec.Body.String())
+		t.Log("WANT", expected)
+	}
+}

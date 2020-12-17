@@ -122,6 +122,7 @@ func (s *StreamRecorder) WaitForFlush() {
 	}
 }
 
+// TODO: Rework for -race test
 func TestNotificationMessages(t *testing.T) {
 
 	req, _ := http.NewRequest("GET", "/notifications", nil)

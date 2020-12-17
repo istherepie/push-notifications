@@ -43,6 +43,7 @@ func (b *Broker) Subscribe() *Subscription {
 	}
 
 	b.Register <- sub
+
 	return sub
 }
 
@@ -69,8 +70,10 @@ func (b *Broker) Run() {
 		case sub := <-b.Register:
 			var empty struct{}
 			b.Subscriptions[sub] = empty
+			go b.WaitForClose(sub)
 			b.EventHook(1)
 		case sub := <-b.Unregister:
+			close(sub.incoming)
 			delete(b.Subscriptions, sub)
 			b.EventHook(2)
 		case message := <-b.MessageQueue:

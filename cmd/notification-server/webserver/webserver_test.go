@@ -6,7 +6,28 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/istherepie/push-notifications/eventbroker"
 )
+
+func Setup(t *testing.T) *eventbroker.Broker {
+
+	hook := func(status int) {
+		// do nothing
+	}
+
+	// Setup Broker
+	broker := &eventbroker.Broker{
+		Quit:          make(chan struct{}),
+		Subscriptions: make(map[*eventbroker.Subscription]struct{}),
+		Register:      make(chan *eventbroker.Subscription),
+		Unregister:    make(chan *eventbroker.Subscription),
+		MessageQueue:  make(chan string),
+		EventHook:     hook,
+	}
+
+	return broker
+}
 
 func TestIndexHandler(t *testing.T) {
 
@@ -18,7 +39,8 @@ func TestIndexHandler(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	// Run handler
-	handler := Mux()
+	broker := Setup(t)
+	handler := Mux(broker)
 	handler.ServeHTTP(rec, req)
 
 	// Test
@@ -50,13 +72,18 @@ func TestMessageHandler(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	// Run handler
-	handler := Mux()
+	broker := Setup(t)
+	go broker.Run()
+	handler := Mux(broker)
 	handler.ServeHTTP(rec, req)
+
+	broker.Close()
 
 	// Test
 	if rec.Code != http.StatusNoContent {
 		t.Errorf("Incorrect status code, got %v want %v", rec.Code, http.StatusOK)
 	}
+
 }
 
 func TestNotificationsHandler(t *testing.T) {
@@ -69,7 +96,8 @@ func TestNotificationsHandler(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	// Run handler
-	handler := Mux()
+	broker := Setup(t)
+	handler := Mux(broker)
 	go handler.ServeHTTP(rec, req)
 
 	// Test

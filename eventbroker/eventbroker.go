@@ -20,6 +20,7 @@ func (c *Subscription) Next() <-chan string {
 
 type Broker struct {
 	mtx           sync.RWMutex
+	Quit          chan struct{}
 	Subscriptions map[*Subscription]struct{}
 	Register      chan *Subscription
 	Unregister    chan *Subscription
@@ -77,6 +78,11 @@ func (b *Broker) CountSubs() int {
 	return len(b.Subscriptions)
 }
 
+func (b *Broker) Close() {
+	var empty struct{}
+	b.Quit <- empty
+}
+
 func (b *Broker) Run() {
 	for {
 		select {
@@ -96,6 +102,8 @@ func (b *Broker) Run() {
 		case message := <-b.MessageQueue:
 			b.Broadcast(message)
 			b.EventHook(3)
+		case <-b.Quit:
+			return
 		}
 	}
 }

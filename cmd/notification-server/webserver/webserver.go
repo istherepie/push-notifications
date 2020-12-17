@@ -48,8 +48,6 @@ type NotificationHandler struct {
 }
 
 func (n NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Println("NOTIFICATIONS cLient connected")
-
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
@@ -77,11 +75,7 @@ func (n NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Mux() *http.ServeMux {
-
-	// EventBroker
-	broker := &eventbroker.Broker{}
-	broker.Init()
+func Mux(broker *eventbroker.Broker) *http.ServeMux {
 
 	// Handlers
 	handleIndex := &IndexHandler{}

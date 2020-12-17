@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/istherepie/push-notifications/cmd/notification-server/webserver"
+	"github.com/istherepie/push-notifications/eventbroker"
 )
 
 func main() {
@@ -17,7 +18,16 @@ func main() {
 
 	defer listener.Close()
 
-	mux := webserver.Mux()
+	broker := &eventbroker.Broker{
+		Subscriptions: make(map[*eventbroker.Subscription]struct{}),
+		Register:      make(chan *eventbroker.Subscription),
+		Unregister:    make(chan *eventbroker.Subscription),
+		MessageQueue:  make(chan string),
+	}
+
+	go broker.Run()
+
+	mux := webserver.Mux(broker)
 
 	serveErr := http.Serve(listener, mux)
 

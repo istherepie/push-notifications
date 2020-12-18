@@ -5,6 +5,7 @@
 .idea
 .vscode
 .notes
+node_modules
 
 # cd/ci
 build

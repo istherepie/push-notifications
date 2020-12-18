@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap');
+
+:root {
+  --text-color: white;
+  --background-gradient: linear-gradient(159deg, rgba(131,58,180,1) 0%, rgba(253,29,29,0.7329132336528361) 50%, rgba(252,176,69,1) 100%);
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: "Poppins", 'Helvetica Neue, Helvetica, Arial';
+  background: var(--background-gradient);
+  color: var(--text-color)
+}
+
+body, main {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+main {
+	flex-direction: column;
+}

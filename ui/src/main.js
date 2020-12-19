@@ -21,12 +21,12 @@ class App {
 	createNotification(message) {
 		// Create notification container
 		let notification = document.createElement("div")
-		notification.classList = ["notification"]
+		notification.classList = "notification fade-in"
 
 		// Create title
 		let title = document.createElement("h4")
 		title.innerHTML = "Notification"
-		title.classList = ["notification-title"]
+		title.classList = "notification-title"
 
 		// Create body
 		let body = document.createElement("div")
@@ -40,6 +40,14 @@ class App {
 	notify(message) {
 		let notification = this.createNotification(message)
 		this.area.append(notification)
+
+		setTimeout(() => {
+			notification.classList = "notification fade-out"
+			notification.addEventListener("animationend", event => {
+				notification.remove()
+			})
+			
+		}, 6000)
 	}
 
 	fire(event) {

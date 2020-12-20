@@ -31,11 +31,11 @@
 }
 
 .fade-in {
-	animation: fadein 0.5s ease-in forwards;
+	animation: fadein 0.3s ease-in forwards;
 }
 
 .fade-out {
-	animation: fadeout 0.5s ease-out forwards;
+	animation: fadeout 0.5s ease-out;
 }
 
 
@@ -45,21 +45,25 @@
 	   	opacity: 0; 
 	}
 	75% {
-		transform: scale(0.9);		
+		transform: scale(0.9);
+		opacity: 0.5;	
 	}
 	100% {
 		transform: scale(1);
-		opacity: 1;
+		opacity: 1;	
 	}
 }
 
 @keyframes fadeout {
-	from {
-	  	transform: scale(1)  translateX(0);
-		opacity: 1; 
+	0% {
+	  	transform: translate(0, 0);
+		
 	}
-	to { 
-		transform: scale(0) translateX(50rem);
+	75% {
+		opacity: 1;
+	}
+	100% { 
+		transform: translate(50em, 0);
 		opacity: 0;
 	}
 }

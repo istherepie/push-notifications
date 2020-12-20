@@ -1,0 +1,113 @@
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap');
+
+:root {
+  --text-color: black;
+  --text-light-color: rgb(141, 140, 140);
+  --background-color: rgb(242, 242, 242);
+  --box-color: white;
+  --shadow: -3px 4px 9px 0px rgba(153,153,153,0.78);
+  --theme-red: rgb(235, 69, 69);
+  --theme-dark: rgb(41, 41, 41);
+  background-color: var(--background-color);
+}
+
+html {
+	font-size: 16px;
+	font-family: "Poppins", 'Helvetica Neue, Helvetica, Arial';
+  	color: var(--text-color)
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  
+}
+
+body {
+	display: block;
+}
+
+main {
+	padding-top: 150px;
+	padding-bottom: 350px;
+	display: flex;
+	width: 75%;
+	margin: 0 auto;
+	flex-direction: column;
+}
+
+a {
+	font-weight: bold;
+	text-decoration: none;
+}
+.title-bar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 3em;
+}
+
+.title-bar h1 {
+	font-size: 3em;
+	font-weight: bold;
+	color: var(--theme-dark);
+}
+
+.title-bar h1 span {
+	color: var(--theme-red);
+}
+
+.content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.description {
+	width: 35%;
+}
+
+.description p {
+	margin-bottom: 1em;
+}
+
+.example {
+	margin: 4em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+
+}
+.example-text {
+	text-align: center;
+}
+
+.example-button {
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 2em;
+	padding: 0.5em 2em;
+
+	border-radius: 6px;
+	font-size: 1.2em;
+	font-weight: bold;
+	border: 4px solid var(--theme-dark);
+	background-color: var(--theme-dark);
+	color: white;
+}
+
+.example-button .fa-rocket {
+	margin-right: 0.4em;
+}
+
+.example-button:hover {
+	background-color: white;
+	color: var(--theme-dark);
+	box-shadow: var(--shadow);
+}

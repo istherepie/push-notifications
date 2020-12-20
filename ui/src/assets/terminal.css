@@ -1,0 +1,64 @@
+/* Terminal browser */
+.terminal {
+	width: 650px;
+	height: 200px;
+	/* margin: auto; */
+	border-radius: 8px;
+	background-color: black;
+	box-shadow: var(--shadow);
+	align-self: center;
+}
+
+.terminal-bar {
+	background-color: rgb(228, 227, 227);
+	border-top: 1px solid rgb(228, 227, 227);
+	border-radius: 6px 6px 0 0;
+	padding: 10px;
+}
+
+.traffic-light {
+	display: inline-block;
+	background-color: black;
+	height: 20px;
+	width: 20px;
+	border-radius: 50%;
+	margin: 4px 2px;
+	vertical-align: middle
+}
+
+.traffic-light.green {
+	background-color: rgb(45, 214, 45);
+}
+
+.traffic-light.red {
+	background-color: rgb(230, 91, 91);
+}
+
+.traffic-light.yellow {
+	background-color: rgb(255, 228, 110);
+}
+
+.terminal-background {
+	padding: 8px;	
+	border-radius: 0 0 6px 0;
+}
+
+.terminal-text{
+	color: rgb(82, 231, 82);
+}
+
+.caret {
+	margin-left: 4px;
+	padding: 1px 6px 0 6px;
+	background-color: rgb(189, 36, 138);
+	animation: blink 0.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+	0%,100% {
+		opacity: 1; 
+	}
+	50% { 
+		opacity: 0;
+	}
+}

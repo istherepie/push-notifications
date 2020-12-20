@@ -1,0 +1,66 @@
+/* Notifications */
+
+.notifications {
+	position: fixed;
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 35%;
+}
+
+.notification {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	min-width: 350px;
+	background-color: var(--theme-red);
+	border-radius: 6px;
+	padding: 1em;
+	margin: 1em;
+	z-index: 10;
+	box-shadow: var(--shadow);
+}
+
+.white {
+	color: white;
+}
+
+
+.notification-text {
+	color: white;
+	padding: 0 1em;
+}
+
+.fade-in {
+	animation: fadein 0.5s ease-in forwards;
+}
+
+.fade-out {
+	animation: fadeout 0.5s ease-out forwards;
+}
+
+
+@keyframes fadein {
+  	0% {
+		transform: scale(4);
+	   	opacity: 0; 
+	}
+	75% {
+		transform: scale(0.9);		
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes fadeout {
+	from {
+	  	transform: scale(1)  translateX(0);
+		opacity: 1; 
+	}
+	to { 
+		transform: scale(0) translateX(50rem);
+		opacity: 0;
+	}
+}

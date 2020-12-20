@@ -2,14 +2,14 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap');
 
 :root {
-  --text-color: black;
-  --text-light-color: rgb(141, 140, 140);
-  --background-color: rgb(242, 242, 242);
-  --box-color: white;
-  --shadow: -3px 4px 9px 0px rgba(153,153,153,0.78);
-  --theme-red: rgb(235, 69, 69);
-  --theme-dark: rgb(41, 41, 41);
-  background-color: var(--background-color);
+	--text-color: black;
+	--text-light-color: rgb(141, 140, 140);
+	--background-color: rgb(242, 242, 242);
+	--box-color: white;
+	--shadow: -3px 4px 9px 0px rgba(153,153,153,0.78);
+	--theme-red: rgb(235, 69, 69);
+	--theme-dark: rgb(41, 41, 41);
+  	background-color: var(--background-color);
 }
 
 html {
@@ -43,6 +43,7 @@ a {
 	font-weight: bold;
 	text-decoration: none;
 }
+
 .title-bar {
 	display: flex;
 	flex-direction: row;

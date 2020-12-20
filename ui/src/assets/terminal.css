@@ -6,6 +6,7 @@
 	background-color: black;
 	box-shadow: var(--shadow);
 	align-self: center;
+	z-index: 1;
 }
 
 .terminal-bar {

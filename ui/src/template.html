@@ -37,7 +37,7 @@
 				</div>
 				<div class="terminal-background">
 					<p class="terminal-text">
-						$ MESSAGE='{"message": "hello"}'<br />
+						$ MESSAGE='{"message": "hello notification"}'<br />
 						$ curl -X POST -d $MESSAGE https://localhost:8080/message				
 						<span class="caret"></span>
 					</p>
@@ -53,25 +53,27 @@
 			</p>
 			<p class="example-text">Or simply press the button below for an auto generated notification!</p>
 
-			<button class="example-button">
+			<button id="submit" class="example-button">
 				<i class="fas fa-rocket"></i> GO! 
 			</button>		
 		</section>
 		
 	</main>
 
-	<aside class="notifications">
-		<div class="notification fade-out">
-			<div class="icon">
-				<i class="fas fa-comment-alt fa-2x white"></i>
-				
-			</div>
-			<div>
-				<p class="notification-text">
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis expedita sunt, adipisci quam officiis consectetur amet iusto beatae rerum totam, consequuntur nesciunt explicabo provident aliquid deleniti illum eos similique praesentium.
-				</p>
-			</div>
-		</div>
+	<aside id="notification-area" class="notifications">
+		<!-- Notification example
+			<div class="notification fade-in">
+				<div class="icon">
+					<i class="fas fa-comment-alt fa-2x white"></i>
+					
+				</div>
+				<div>
+					<p class="notification-text">
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis expedita sunt, adipisci quam officiis consectetur amet iusto beatae rerum totam, consequuntur nesciunt explicabo provident aliquid deleniti illum eos similique praesentium.
+					</p>
+				</div>
+			</div> 
+		-->
 	</aside>
 
 	<footer class="footer">

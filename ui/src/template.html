@@ -2,30 +2,103 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>PUSH!</title>
 </head>
 <body>
-	<main id="root">
-		<!-- centered box -->
-		<section class="box">
-			<div>
-				<h1 class="title">PUSH NOTIFICATIONS</h1>
-			</div>
-			<div class="form-control">
-				<input id="notification-input" type="text">
-				<button id="submit">Send</button>
-			</div>	
+	<main>
+		<section class="title-bar">
+			<h1>PUSH <span>NOTIFICATIONS++</span></h1>
 		</section>
 
-		<!-- notification area -->
-		<section id="notification-area" class="notifications">
-			<!-- Example notification below
-			<div class="notification">
-				<h4 class="notification-title">title</h4>
-				<p>I am a notification</p>
-			</div> 
-			-->
+		<section class="content">
+			<div class="description">
+				<p>
+					This is a <strong>DEMO</strong> showcasing an
+					implementation of `push notifications` 
+					using SSE (Server-sent events)
+				</p>
+				<p>
+					Feel free to generate a notification
+					according to the example on the right. 
+				</p>
+				
+				<a class="link" href="#">
+					View the source code on github 
+					<i class="fa fa-arrow-right"></i>
+				</a>
+				
+				
+			</div>
+			<div class="terminal">
+				<div class="terminal-bar">
+					<span class="traffic-light red"></span>
+					<span class="traffic-light yellow"></span>
+					<span class="traffic-light green"></span>
+				</div>
+				<div class="terminal-background">
+					<p class="terminal-text">
+						$ MESSAGE='{"message": "hello"}'<br />
+						$ curl -X POST -d $MESSAGE https://localhost:8080/message				
+						<span class="caret"></span>
+					</p>
+				</div>
+			</div>
 		</section>
+
+
+		<section class="example">
+			<p class="example-text">
+				Generate a notifcation by making a HTTP POST request,
+				as in the example above.
+			</p>
+			<p class="example-text">Or simply press the button below for an auto generated notification!</p>
+
+			<button class="example-button">
+				<i class="fas fa-rocket"></i> GO! 
+			</button>		
+		</section>
+		
 	</main>
+
+	<aside class="notifications">
+		<div class="notification fade-in">
+			<div class="icon">
+				<i class="fas fa-comment-alt fa-2x white"></i>
+				
+			</div>
+			<div>
+				<p class="notification-text">
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis expedita sunt, adipisci quam officiis consectetur amet iusto beatae rerum totam, consequuntur nesciunt explicabo provident aliquid deleniti illum eos similique praesentium.
+				</p>
+			</div>
+		</div>
+	</aside>
+
+	<footer class="footer">
+		<section>
+			<div class="copyright">
+				<i class="far fa-copyright fa-2x"></i> 
+				<h1>2020 <span>STEFFEN PARK</span></h1>
+			</div>
+			<div class="registered">
+				<p>Made with love <i class="fas fa-heart"></i></p>
+			</div>
+		</section>
+
+		<section class="social">
+			<div class="social-link">
+				<div class="social-icon">
+					<i class="fas fa-envelope fa-2x"></i></i>
+				</div>
+				<a href="#" target="_blank">Send me a message</a>
+			</div>
+			<div class="social-link">
+				<div class="social-icon">
+					<i class="fab fa-github fa-2x"></i>
+				</div>
+				<a href="#" target="_blank">Find me on Github</a>
+			</div>	
+		</section>
+	</footer>
 </body>
 </html>

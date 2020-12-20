@@ -9,6 +9,8 @@
 
 import 'modern-css-reset'
 import '$base/style.css'
+// import '$base/assets/header.css'
+import "@fortawesome/fontawesome-free/js/all";
 
 class App {
 	constructor(elementID) {

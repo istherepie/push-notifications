@@ -10,13 +10,16 @@ Building a notification service using SSE (Server-sent events)...
 * [x] Add layout and styling
 * [x] Split App class into several components (maintainability)
 * [ ] Check connection status loop
+* [ ] Setup testing suite
+* [ ] Replace showcase with simple frontend (for readability)
 
 **Backend**
-* [ ] Change: publish method should accept a more generic []byte interface
-* [ ] Add json tagged structs for broadcast messages
 * [ ] Send heartbeat event / keepalive
+* [ ] Send system events to clients (demo purposes)
 * [ ] Input validation for message requests
-
+* [ ] Simple `running` metrics
+* [ ] Make event types configurable
+ 
 
 ## Contact
 

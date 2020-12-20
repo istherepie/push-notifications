@@ -1,26 +1,12 @@
 /* utility */
-.centered {
-	margin: auto;
-	width: 60%;
-	padding: 10px;
-}
-
 .icon {
 	border-radius: 50%;
 	background-color: rgba(255, 255, 255, 0.123);
 	padding: 1em;
-}
-
-.arrow-down {
-	width: 0; 
-	height: 0; 
-	border-left: 20px solid transparent;
-	border-right: 20px solid transparent;
-	
-	border-top: 20px solid #f00;
+	display: inline-block;
+	margin: 0.5em;
 }
 
 .link {
 	color: var(--theme-dark);
 }
-

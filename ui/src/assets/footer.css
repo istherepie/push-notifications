@@ -1,10 +1,8 @@
 .footer {
-	position: fixed;
 	background-color: rgb(41, 41, 41);
 	color: white;
 	width: 100%;
 	padding: 0.4em 4em;
-	bottom: 0;
 	height: 250px;
 
 	display: flex;
@@ -53,15 +51,6 @@
 }
 
 .social-link a {
-	font-weight: bold;
 	color: white;
 	z-index: 1;
-}
-
-.social-icon {
-	border-radius: 50%;
-	background-color: rgba(255, 255, 255, 0.123);
-	padding: 1em;
-	display: inline-block;
-	margin: 0.5em;
 }

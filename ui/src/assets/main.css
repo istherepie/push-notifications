@@ -27,16 +27,16 @@ html, body{
 }
 
 body {
-	display: block;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
 }
 
 main {
-	padding-top: 150px;
-	padding-bottom: 350px;
-	display: flex;
-	width: 75%;
-	margin: 0 auto;
-	flex-direction: column;
+	margin: 5em 5em 0 5em;
+	padding-bottom: 150px;
+	max-width: 1280px;
 }
 
 a {
@@ -75,7 +75,7 @@ a {
 }
 
 .example {
-	margin: 4em;
+	margin-top: 4em;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -109,5 +109,4 @@ a {
 .example-button:hover {
 	background-color: white;
 	color: var(--theme-dark);
-	box-shadow: var(--shadow);
 }

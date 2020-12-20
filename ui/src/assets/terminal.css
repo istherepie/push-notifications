@@ -2,7 +2,6 @@
 .terminal {
 	width: 650px;
 	height: 200px;
-	/* margin: auto; */
 	border-radius: 8px;
 	background-color: black;
 	box-shadow: var(--shadow);

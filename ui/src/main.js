@@ -9,39 +9,94 @@
 
 import 'modern-css-reset'
 import '$base/style.css'
-// import '$base/assets/header.css'
-import "@fortawesome/fontawesome-free/js/all";
+import "@fortawesome/fontawesome-free/js/all"
 
-class App {
+
+class EventHandler {
+	constructor(eventURI) {
+		this.es = new EventSource(eventURI)
+	}
+
+	// The handler must accept a message (string)
+	subscribe(handler) {
+		this.es.onmessage = (event) => {
+			handler(event.data)
+		}
+	}
+}
+
+class MessageHandler {
+	constructor(messageURI) {
+		this.uri = messageURI
+	}
+
+	publish(message) {
+		if (typeof message != "string") {
+			throw new Error("Message must be passed as a string")
+		}
+
+		let payload = JSON.stringify({
+			message: message
+		});
+
+		return this.request(payload)
+	}
+
+	request(payload) {
+		var http = new XMLHttpRequest()
+		return new Promise((reject, resolve) => {
+
+			http.upload.addEventListener("load", complete => {
+				console.log(complete)
+				return resolve(complete)
+			});
+
+			http.upload.addEventListener("error", err => {
+				return reject(err)
+			});
+		
+			http.open("POST", this.uri)
+			http.send(payload);
+		})
+
+	}
+}
+
+class NotificationHandler {
 	constructor(elementID) {
 		this.root = document.getElementById(elementID)
-		this.input = document.getElementById("notification-input")
-		this.area = document.getElementById("notification-area")
-		this.socket = new EventSource("/api/notifications")
 	}
 
 	createNotification(message) {
+		// Create iconContainer
+		let iconContainer = document.createElement("div")
+		iconContainer.classList = "icon"
+
+		let icon = document.createElement("i")
+		icon.classList = "fas fa-comment-alt fa-2x white"
+
+		iconContainer.append(icon)
+
+		// Create pContainer
+		let p = document.createElement("p")
+		p.classList = "notification-text"
+		p.innerHTML = message
+
+		let pContainer = document.createElement("div")
+		pContainer.append(p)
+
 		// Create notification container
 		let notification = document.createElement("div")
 		notification.classList = "notification fade-in"
 
-		// Create title
-		let title = document.createElement("h4")
-		title.innerHTML = "Notification"
-		title.classList = "notification-title"
-
-		// Create body
-		let body = document.createElement("div")
-		body.innerHTML = message
-
 		// Append title and body
-		notification.append(title, body)
+		notification.append(iconContainer, pContainer)
 		return notification
 	}
 
-	notify(message) {
+	fire(message) {
 		let notification = this.createNotification(message)
-		this.area.append(notification)
+		this.root.append(notification)
 
 		setTimeout(() => {
 			notification.classList = "notification fade-out"
@@ -51,45 +106,50 @@ class App {
 			
 		}, 6000)
 	}
+}
 
-	fire(event) {
-		event.preventDefault()
-		console.log(event)
-
-		this.request()
+class App {
+	constructor(eventHandler, messageHandler, notificationHandler) {
+		this.eventHandler = eventHandler
+		this.messageHandler = messageHandler
+		this.notificationHandler = notificationHandler
 	}
 
-	request() {
-		var req = new XMLHttpRequest();
+	example() {
+		let message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+		return this.createEvent(message)
+	}
 
-		req.addEventListener("load", event => {
-			console.log(event)
-		});
-
-		req.onreadystatechange = event => {
-			console.log(event)
-		}
-
-		let payload = {
-			message: this.input.value
-		}
-
-		let postData = JSON.stringify(payload)
-
-		req.open("POST", "/api/message");
-		req.send(postData);
+	createEvent(message) {
+		this.messageHandler.publish(message)
+		.then(result => {
+			console.log(result)
+		})
 	}
 
 	Run() {
-		document.body.append(this.area)
+		let trigger = document.getElementById("submit")
 
-		this.socket.onmessage = (event) => {this.notify(event.data)}
+		trigger.addEventListener("click", event => {
+			event.preventDefault()
+			this.example()
+		});
 
-		let button = document.getElementById("submit")
-		button.addEventListener("click", event => this.fire(event));
+		this.eventHandler.subscribe(message => {
+			this.notificationHandler.fire(message)
+		})
+
 	}
 }
 
-// Init the app!
-const app = new App("root")
-window.onload = () => { app.Run() }
+// Init
+const eventHandler = new EventHandler("/api/notifications")
+const messageHandler = new MessageHandler("/api/message")
+const notificationHandler = new NotificationHandler("notification-area")
+
+const app = new App(eventHandler, messageHandler, notificationHandler)
+
+// MAIN()
+window.onload = () => {
+	app.Run() 
+}

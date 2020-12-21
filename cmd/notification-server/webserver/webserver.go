@@ -14,6 +14,10 @@ type Payload struct {
 	Message string `json:"message"`
 }
 
+func (p *Payload) Escaped() string {
+	return html.EscapeString(p.Message)
+}
+
 func (p *Payload) IsValid() bool {
 	return p.Message != ""
 }
@@ -42,12 +46,12 @@ func (m MessageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request!", http.StatusBadRequest)
 		return
 	}
-	html.EscapeString("sdfsdf")
+
 	// This handler should only publish messages of type "message"
 	defaultType := "message"
 
 	// Broadcast
-	m.Broker.Publish(defaultType, payload.Message)
+	m.Broker.Publish(defaultType, payload.Escaped())
 	w.WriteHeader(http.StatusNoContent)
 }
 

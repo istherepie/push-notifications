@@ -12,7 +12,7 @@ func Setup(t *testing.T) *Broker {
 		Subscriptions: make(map[*Subscription]struct{}),
 		Register:      make(chan *Subscription),
 		Unregister:    make(chan *Subscription),
-		MessageQueue:  make(chan string),
+		MessageQueue:  make(chan *Message),
 		EventHook:     hookHandler,
 	}
 
@@ -79,6 +79,7 @@ func TestEventNotification(t *testing.T) {
 	defer sub.Close()
 
 	// Fixtures
+	testType := "test"
 	testmessages := []string{
 		"test message 1",
 		"test message 2",
@@ -89,13 +90,13 @@ func TestEventNotification(t *testing.T) {
 
 	// Test all 5 messages
 	for i := 0; i < 5; i++ {
-		broker.Publish(testmessages[i])
+		broker.Publish(testType, testmessages[i])
 
 		// Get message
 		result := <-sub.Next()
 
-		if result != testmessages[i] {
-			t.Errorf("Message I/O error, expected: %v , got: %v", result, testmessages[i])
+		if result.Value != testmessages[i] {
+			t.Errorf("Message I/O error, expected: %v , got: %v", result.Value, testmessages[i])
 		}
 
 	}

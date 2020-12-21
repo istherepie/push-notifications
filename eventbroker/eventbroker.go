@@ -5,16 +5,21 @@ import (
 	"time"
 )
 
+type Message struct {
+	Type  string
+	Value string
+}
+
 type Subscription struct {
 	quit     chan struct{}
-	incoming chan string
+	incoming chan *Message
 }
 
 func (c *Subscription) Close() {
 	close(c.quit)
 }
 
-func (c *Subscription) Next() <-chan string {
+func (c *Subscription) Next() <-chan *Message {
 	return c.incoming
 }
 
@@ -24,7 +29,7 @@ type Broker struct {
 	Subscriptions map[*Subscription]struct{}
 	Register      chan *Subscription
 	Unregister    chan *Subscription
-	MessageQueue  chan string
+	MessageQueue  chan *Message
 	EventHook     func(status int)
 }
 
@@ -36,15 +41,15 @@ func (b *Broker) WaitForClose(sub *Subscription) {
 	}
 }
 
-func (b *Broker) Publish(message string) {
-	b.MessageQueue <- message
+func (b *Broker) Publish(msgType string, msgValue string) {
+	b.MessageQueue <- &Message{msgType, msgValue}
 }
 
 func (b *Broker) Subscribe() *Subscription {
 
 	sub := &Subscription{
 		quit:     make(chan struct{}),
-		incoming: make(chan string),
+		incoming: make(chan *Message),
 	}
 
 	b.Register <- sub
@@ -52,11 +57,11 @@ func (b *Broker) Subscribe() *Subscription {
 	return sub
 }
 
-func (b *Broker) Broadcast(message string) {
+func (b *Broker) Broadcast(msg *Message) {
 
-	transmit := func(sub *Subscription, message string) {
+	transmit := func(sub *Subscription, msg *Message) {
 		select {
-		case sub.incoming <- message:
+		case sub.incoming <- msg:
 			return
 		// TODO: The timeout should be configurable
 		case <-time.After(1500 * time.Millisecond):
@@ -66,7 +71,7 @@ func (b *Broker) Broadcast(message string) {
 
 	b.mtx.RLock()
 	for sub := range b.Subscriptions {
-		go transmit(sub, message)
+		go transmit(sub, msg)
 	}
 
 	b.mtx.RUnlock()

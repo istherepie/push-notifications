@@ -13,6 +13,10 @@ type Payload struct {
 	Message string `json:"message"`
 }
 
+func (p *Payload) IsValid() bool {
+	return p.Message != ""
+}
+
 type IndexHandler struct{}
 
 func (i IndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -33,13 +37,16 @@ func (m MessageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&payload)
 
-	if err != nil {
+	if err != nil || !payload.IsValid() {
 		http.Error(w, "Invalid request!", http.StatusBadRequest)
 		return
 	}
 
+	// This handler should only publish messages of type "message"
+	defaultType := "message"
+
 	// Broadcast
-	m.Broker.Publish(payload.Message)
+	m.Broker.Publish(defaultType, payload.Message)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -47,7 +54,7 @@ type NotificationHandler struct {
 	Broker *eventbroker.Broker
 }
 
-func (n NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (n *NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
@@ -69,7 +76,8 @@ func (n NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Println("NOTIFICATIONS cLient disconnect")
 			return
 		case msg := <-sub.Next():
-			fmt.Fprintf(w, "data: %v\n\n", msg)
+			fmt.Fprintf(w, "event: %v\n", msg.Type)
+			fmt.Fprintf(w, "data: %v\n\n", msg.Value)
 			flusher.Flush()
 		}
 	}

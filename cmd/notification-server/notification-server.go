@@ -22,7 +22,8 @@ func main() {
 		Subscriptions: make(map[*eventbroker.Subscription]struct{}),
 		Register:      make(chan *eventbroker.Subscription),
 		Unregister:    make(chan *eventbroker.Subscription),
-		MessageQueue:  make(chan string),
+		MessageQueue:  make(chan *eventbroker.Message),
+		EventHook:     func(status int) {},
 	}
 
 	go broker.Run()

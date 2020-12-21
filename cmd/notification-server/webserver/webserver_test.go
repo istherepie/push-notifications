@@ -22,7 +22,7 @@ func Setup(t *testing.T) *eventbroker.Broker {
 		Subscriptions: make(map[*eventbroker.Subscription]struct{}),
 		Register:      make(chan *eventbroker.Subscription),
 		Unregister:    make(chan *eventbroker.Subscription),
-		MessageQueue:  make(chan string),
+		MessageQueue:  make(chan *eventbroker.Message),
 		EventHook:     hook,
 	}
 
@@ -83,6 +83,32 @@ func TestMessageHandler(t *testing.T) {
 	// Test
 	if rec.Code != http.StatusNoContent {
 		t.Errorf("Incorrect status code, got %v want %v", rec.Code, http.StatusOK)
+	}
+}
+
+func TestMessageHandlerBadRequest(t *testing.T) {
+
+	payload := Payload{
+		Message: "",
+	}
+
+	data, _ := json.Marshal(payload)
+
+	req, err := http.NewRequest("POST", "/message", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rec := httptest.NewRecorder()
+
+	// Run handler
+	broker := Setup(t)
+	handler := Mux(broker)
+	handler.ServeHTTP(rec, req)
+
+	// Test
+	if rec.Code != http.StatusBadRequest {
+		t.Errorf("This should result in 400, got %v want %v", rec.Code, http.StatusOK)
 	}
 
 }
@@ -149,12 +175,12 @@ func TestNotificationMessages(t *testing.T) {
 	<-waitForRegistration
 
 	// Pass message into the loop
-	broker.Publish("this is a test message")
+	broker.Publish("message", "this is a test message")
 
 	// Wait buffer to be flushed
 	rec.WaitForFlush()
 
-	expected := "data: this is a test message\n\n"
+	expected := "event: message\ndata: this is a test message\n\n"
 
 	// Test
 	if rec.Body.String() != expected {

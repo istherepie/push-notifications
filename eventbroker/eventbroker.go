@@ -19,6 +19,11 @@ func (c *Subscription) Close() {
 	close(c.quit)
 }
 
+// Inject a message into the incoming channel
+func (c *Subscription) Inject(msgType string, msgValue string) {
+	c.incoming <- &Message{msgType, msgValue}
+}
+
 func (c *Subscription) Next() <-chan *Message {
 	return c.incoming
 }

@@ -3,6 +3,7 @@ package webserver
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 
@@ -41,7 +42,7 @@ func (m MessageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request!", http.StatusBadRequest)
 		return
 	}
-
+	html.EscapeString("sdfsdf")
 	// This handler should only publish messages of type "message"
 	defaultType := "message"
 
@@ -69,6 +70,10 @@ func (n *NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	sub := n.Broker.Subscribe()
 	defer sub.Close()
+
+	// Inject a heartbeat
+	// into the subscription channel
+	go InjectHeartbeat(r, sub)
 
 	for {
 		select {

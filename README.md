@@ -14,7 +14,7 @@ Building a notification service using SSE (Server-sent events)...
 * [ ] Replace showcase with simple frontend (for readability)
 
 **Backend**
-* [ ] Send heartbeat event / keepalive
+* [x] Send heartbeat event / keepalive
 * [ ] Send system events to clients (demo purposes)
 * [ ] Input validation for message requests
 * [ ] Simple `running` metrics

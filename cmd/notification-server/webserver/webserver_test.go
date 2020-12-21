@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/istherepie/push-notifications/eventbroker"
+	"github.com/istherepie/push-notifications/metrics"
 )
 
 func Setup(t *testing.T) *eventbroker.Broker {
@@ -44,7 +45,8 @@ func TestIndexHandler(t *testing.T) {
 
 	// Run handler
 	broker := Setup(t)
-	handler := Mux(broker)
+	counter := &metrics.Counter{}
+	handler := Mux(broker, counter)
 	handler.ServeHTTP(rec, req)
 
 	// Test
@@ -77,7 +79,8 @@ func TestMessageHandler(t *testing.T) {
 
 	// Run handler
 	broker := Setup(t)
-	handler := Mux(broker)
+	counter := &metrics.Counter{}
+	handler := Mux(broker, counter)
 	handler.ServeHTTP(rec, req)
 
 	// Test
@@ -103,7 +106,8 @@ func TestMessageHandlerBadRequest(t *testing.T) {
 
 	// Run handler
 	broker := Setup(t)
-	handler := Mux(broker)
+	counter := &metrics.Counter{}
+	handler := Mux(broker, counter)
 	handler.ServeHTTP(rec, req)
 
 	// Test
@@ -124,7 +128,8 @@ func TestNotificationsHandler(t *testing.T) {
 
 	// Run handler
 	broker := Setup(t)
-	handler := Mux(broker)
+	counter := &metrics.Counter{}
+	handler := Mux(broker, counter)
 	go handler.ServeHTTP(rec, req)
 
 	// Test
@@ -168,7 +173,8 @@ func TestNotificationMessages(t *testing.T) {
 		}
 	}
 
-	mux := NotificationHandler{broker}
+	counter := &metrics.Counter{}
+	mux := NotificationHandler{broker, counter}
 
 	go mux.ServeHTTP(rec, req)
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/istherepie/push-notifications/cmd/notification-server/webserver"
 	"github.com/istherepie/push-notifications/eventbroker"
+	"github.com/istherepie/push-notifications/metrics"
 )
 
 func main() {
@@ -18,17 +19,37 @@ func main() {
 
 	defer listener.Close()
 
+	// Metrics
+	counter := &metrics.Counter{}
+
+	recordMessages := func(status int) {
+		switch status {
+		case 1:
+			counter.Connected()
+			return
+		case 2:
+			counter.Disconnected()
+			return
+		case 3:
+			// Cannot get message type from the eventhook
+			// For now, just set the type to `any`
+			// in order to record the total sum
+			counter.Message("any")
+			return
+		}
+	}
+
 	broker := &eventbroker.Broker{
 		Subscriptions: make(map[*eventbroker.Subscription]struct{}),
 		Register:      make(chan *eventbroker.Subscription),
 		Unregister:    make(chan *eventbroker.Subscription),
 		MessageQueue:  make(chan *eventbroker.Message),
-		EventHook:     func(status int) {},
+		EventHook:     recordMessages,
 	}
 
 	go broker.Run()
 
-	mux := webserver.Mux(broker)
+	mux := webserver.Mux(broker, counter)
 
 	serveErr := http.Serve(listener, mux)
 

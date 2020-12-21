@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/istherepie/push-notifications/eventbroker"
+	"github.com/istherepie/push-notifications/metrics"
 )
 
 type Payload struct {
@@ -26,6 +27,44 @@ type IndexHandler struct{}
 
 func (i IndexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "index")
+}
+
+type Metrics struct {
+	Status           string `json:"status"` // PLACEHOLDER
+	OpenConnections  int    `json:"open_connections"`
+	Visitors         int    `json:"visitors_total"`
+	VisitorsUnique   int    `json:"visitors_unique"`
+	Messages         int    `json:"messages_total"`
+	MessagesLastHour int    `json:"messages_last_hour"`
+}
+
+type MetricsHandler struct {
+	Counter *metrics.Counter
+}
+
+func (m *MetricsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	// Set header for JSON response
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-cache")
+
+	metr := &Metrics{
+		Status:           "ok",
+		OpenConnections:  m.Counter.Connections,
+		Visitors:         len(m.Counter.Visitors),
+		VisitorsUnique:   m.Counter.UniqueVisitors(),
+		Messages:         len(m.Counter.Messages),
+		MessagesLastHour: m.Counter.MessagesLastHour(),
+	}
+
+	response, err := json.Marshal(metr)
+
+	if err != nil {
+		http.Error(w, "PARSE_RESPONSE_TO_JSON_ERR", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(response)
 }
 
 type MessageHandler struct {
@@ -47,16 +86,14 @@ func (m MessageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// This handler should only publish messages of type "message"
-	defaultType := "message"
-
 	// Broadcast
-	m.Broker.Publish(defaultType, payload.Escaped())
+	m.Broker.Publish(MessageTypeDefault, payload.Escaped())
 	w.WriteHeader(http.StatusNoContent)
 }
 
 type NotificationHandler struct {
-	Broker *eventbroker.Broker
+	Broker  *eventbroker.Broker
+	Counter *metrics.Counter
 }
 
 func (n *NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -71,6 +108,13 @@ func (n *NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, "Streaming unsupported!", http.StatusInternalServerError)
 		return
 	}
+
+	// Store visitor
+	visitor := GetVisitorAddress(r)
+	n.Counter.Visitor(visitor)
+
+	// Before subscribing, annouce presence
+	n.Broker.Publish(MessageTypeService, "Someone has connected!")
 
 	sub := n.Broker.Subscribe()
 	defer sub.Close()
@@ -92,18 +136,20 @@ func (n *NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-func Mux(broker *eventbroker.Broker) *http.ServeMux {
+func Mux(broker *eventbroker.Broker, counter *metrics.Counter) *http.ServeMux {
 
 	// Handlers
 	handleIndex := &IndexHandler{}
 	handleMessage := &MessageHandler{broker}
-	handleNotifications := &NotificationHandler{broker}
+	handleNotifications := &NotificationHandler{broker, counter}
+	handleMetrics := &MetricsHandler{counter}
 
 	// Multiplexer
 	mux := http.NewServeMux()
 
 	// Register routes
 	mux.Handle("/", handleIndex)
+	mux.Handle("/metrics", handleMetrics)
 	mux.Handle("/message", handleMessage)
 	mux.Handle("/notifications", handleNotifications)
 

@@ -2,7 +2,14 @@ package webserver
 
 import (
 	"net/http"
+	"strings"
 	"time"
+)
+
+const (
+	MessageTypeDefault   = "message"
+	MessageTypeHeartbeat = "heartbeat"
+	MessageTypeService   = "service"
 )
 
 type Messenger interface {
@@ -19,4 +26,21 @@ func InjectHeartbeat(r *http.Request, m Messenger) {
 			m.Inject("heartbeat", "ping")
 		}
 	}
+}
+
+func GetVisitorAddress(r *http.Request) string {
+
+	var addr string
+
+	forwarded := r.Header.Get("X-FORWARDED-FOR")
+
+	if forwarded != "" {
+		addr = forwarded
+	} else {
+		addr = r.RemoteAddr
+	}
+
+	ip := strings.Split(addr, ":")
+
+	return ip[0]
 }

@@ -14,6 +14,7 @@ test:
 	go clean -testcache
 	go test -v -race github.com/istherepie/push-notifications/eventbroker
 	go test -v github.com/istherepie/push-notifications/cmd/notification-server/webserver
+	go test -v github.com/istherepie/push-notifications/metrics
 
 build:
 	@echo "Building binaries"

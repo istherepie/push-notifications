@@ -1,7 +1,148 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import 'assets/main';
-@import 'assets/footer';
-@import 'assets/terminal';
-@import 'assets/notification';
-@import 'assets/utility';
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap');
+
+:root {
+	--text-color: black;
+	--text-light-color: rgb(141, 140, 140);
+	--background-color: rgb(242, 242, 242);
+	--box-color: white;
+	--shadow: -3px 4px 9px 0px rgba(153,153,153,0.78);
+	--theme-red: rgb(235, 69, 69);
+	--theme-blue: rgb(53, 140, 240);
+	--theme-dark: rgb(41, 41, 41);
+  	background-color: var(--background-color);
+}
+
+html {
+	font-size: 16px;
+	font-family: "Poppins", 'Helvetica Neue, Helvetica, Arial';
+  	color: var(--text-color)
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  
+}
+
+body {
+	display: block;
+	margin: 5em auto;
+}
+
+aside {
+	width: 400px;
+}
+
+main {
+	width: 760px;
+	margin: 0 auto;
+}
+
+section {
+	margin-bottom: 2em;
+}
+
+section p {
+	margin-bottom: 1em;
+}
+
+footer {
+	text-align: center;
+	margin-top: 4em;
+}
+
+h1 {
+	font-size: 2em;
+}
+
+h1 span {
+	color: var(--theme-red)
+}
+
+a, a:visited {
+	font-weight: bold;
+	text-decoration: none;
+	color: var(--theme-dark)
+}
+
+a:hover {
+	border-bottom: 4px solid var(--theme-dark);
+}
+
+.pre {
+	display: flex;
+	padding: 2em 0em;
+	border: 0;
+	border-radius: 6px;
+	background-color: var(--theme-dark);
+	color: var(--text-light-color);
+	margin-bottom: 2em;
+}
+
+.pre p {
+	margin: 0 auto;
+}
+
+.autogenerate {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.generate {
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0.5em 2em;
+
+	border-radius: 6px;
+	font-size: 1.2em;
+	font-weight: bold;
+	border: 4px solid var(--theme-dark);
+	background-color: var(--theme-dark);
+	color: white;
+}
+
+.generate .fa-rocket {
+	margin-right: 0.4em;
+}
+
+.generate:hover {
+	background-color: white;
+	color: var(--theme-dark);
+}
+
+.notifications {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 35%;
+}
+
+.notification {
+
+	padding: 1em 2em;
+	border-radius: 6px;
+	color: white;
+	background-color: var(--theme-red);
+	margin: 0.3em;
+	display: flex;
+	flex-direction: row;
+}
+
+.notification.service {
+	background-color: var(--theme-blue)
+}
+
+.social,.social:hover{
+	display: inline-block;
+	padding: 0.6em;
+	border-radius: 50%;
+	border: 4px solid var(--theme-dark);	
+}
+

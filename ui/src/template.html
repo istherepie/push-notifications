@@ -2,104 +2,61 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>PUSH!</title>
+	<title>Push Notifications</title>
 </head>
 <body>
+	<aside id="notification-area" class="notifications"></aside>
+
 	<main>
-		<section class="title-bar">
+		<section>
 			<h1>PUSH <span>NOTIFICATIONS++</span></h1>
+			
+			<a href="https://github.com/istherepie/push-notifications" target="_blank">
+				View the source code on github 
+				<i class="fa fa-arrow-right"></i>
+			</a>
 		</section>
 
-		<section class="content">
-			<div class="description">
-				<p>
-					This is a <strong>DEMO</strong> showcasing an
-					implementation of `push notifications` 
-					using SSE (Server-sent events)
-				</p>
-				<p>
-					Feel free to generate a notification
-					according to the example on the right. 
-				</p>
-				
-				<a class="link" href="#">
-					View the source code on github 
-					<i class="fa fa-arrow-right"></i>
-				</a>
-				
-				
-			</div>
-			<div class="terminal">
-				<div class="terminal-bar">
-					<span class="traffic-light red"></span>
-					<span class="traffic-light yellow"></span>
-					<span class="traffic-light green"></span>
-				</div>
-				<div class="terminal-background">
-					<p class="terminal-text">
-						$ MESSAGE='{"message": "hello notification"}'<br />
-						$ curl -X POST -d $MESSAGE https://localhost:8080/message				
-						<span class="caret"></span>
-					</p>
-				</div>
-			</div>
-		</section>
-
-
-		<section class="example">
-			<p class="example-text">
+		<section>
+			<p>
 				Generate a notifcation by making a HTTP POST request,
-				as in the example above.
+				as in the following example:
 			</p>
-			<p class="example-text">Or simply press the button below for an auto generated notification!</p>
 
-			<button id="submit" class="example-button">
-				<i class="fas fa-rocket"></i> GO! 
-			</button>		
-		</section>
-		
-	</main>
-
-	<aside id="notification-area" class="notifications">
-		<!-- Notification example
-			<div class="notification fade-in">
-				<div class="icon">
-					<i class="fas fa-comment-alt fa-2x white"></i>
-					
-				</div>
-				<div>
-					<p class="notification-text">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis expedita sunt, adipisci quam officiis consectetur amet iusto beatae rerum totam, consequuntur nesciunt explicabo provident aliquid deleniti illum eos similique praesentium.
-					</p>
-				</div>
-			</div> 
-		-->
-	</aside>
-
-	<footer class="footer">
-		<section class="social">
-			<div class="social-link">
-				<div class="icon">
-					<i class="fas fa-envelope fa-2x"></i></i>
-				</div>
-				<a href="#" target="_blank">Send me a message</a>
+			<div class="pre">
+				<p>
+					# sh<br />
+					curl -X POST -d '{"message": "hello world"}' <span id="baseurl"></span>
+				</p>
 			</div>
-			<div class="social-link">
-				<div class="icon">
-					<i class="fab fa-github fa-2x"></i>
-				</div>
-				<a href="#" target="_blank">Find me on Github</a>
+
+			<div class="autogenerate">
+				<p>
+					Or simply press <strong>the button</strong> below
+					to autogenerate one!
+				</p>
+
+				<button class="generate" id="submit">
+					<i class="fas fa-rocket"></i> GO! 
+				</button>	
 			</div>	
 		</section>
-		<section>
-			<div class="copyright">
-				<i class="far fa-copyright fa-2x"></i> 
-				<h1>2020 <span>STEFFEN PARK</span></h1>
-			</div>
-			<div class="registered">
-				<p>Made with love <i class="fas fa-heart"></i></p>
-			</div>
-		</section>
+	</main>
+	<footer>
+		<div>
+			<a class="social" href="https://github.com/istherepie" target="_blank">
+				<i class="fab fa-github fa-2x"></i>
+			</a>
+			<a class="social" href="mailto:hello@istherepie.com">
+				<i class="far fa-envelope fa-2x"></i>
+			</a>
+		</div>
+
+		<p>Registered under the MPL2.0 license</p>
+		<p>
+			<i class="far fa-copyright"></i> 2020 <strong>Steffen Park</strong>
+		</p>
 	</footer>
+
 </body>
 </html>

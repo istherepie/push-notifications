@@ -9,9 +9,9 @@ Building a notification service using SSE (Server-sent events)...
 **Frontend**
 * [x] Add layout and styling
 * [x] Split App class into several components (maintainability)
-* [ ] Check connection status loop
+* [x] Check connection status loop
 * [ ] Setup testing suite
-* [ ] Replace showcase with simple frontend (for readability)
+* [x] Replace showcase with simple frontend (for readability)
 
 **Backend**
 * [x] Send heartbeat event / keepalive

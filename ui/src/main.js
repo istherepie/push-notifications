@@ -7,9 +7,17 @@
  * @author Steffen Park <dev@istherepie.com>
  */
 
+// CSS Reset
 import 'modern-css-reset'
+
+// Custom
 import '$base/style.css'
-import "@fortawesome/fontawesome-free/js/all"
+
+// Fontawesome
+import { library, dom } from '@fortawesome/fontawesome-svg-core'
+import { faRocket, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faEnvelope, faCopyright } from '@fortawesome/free-regular-svg-icons'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 
 class EventHandler {
@@ -155,6 +163,10 @@ class App {
 
 // MAIN()
 window.onload = () => {
+
+	// Icons
+	library.add(faArrowRight, faRocket, faGithub, faEnvelope, faCopyright)
+	dom.watch()
 
 	// Setup Handlers
 	const messageHandler = new MessageHandler("/api/message")

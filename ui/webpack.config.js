@@ -15,6 +15,7 @@ module.exports = {
 	resolve: {
 		alias: {
 			"$base": relativepath("src"),
+			"$app": relativepath("src/app"),
 		}
 	},
 	module: {

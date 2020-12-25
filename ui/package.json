@@ -6,12 +6,14 @@
   "scripts": {
     "build": "webpack --mode=production",
     "start": "webpack-dev-server",
-    "test": "jasmine --config=test-spec.json"
+    "test": "babel-node test-setup.js"
   },
   "author": "Steffen Park <dev@istherepie.com>",
   "license": "MPL2.0",
   "devDependencies": {
+    "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
+    "@babel/node": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.0.1",

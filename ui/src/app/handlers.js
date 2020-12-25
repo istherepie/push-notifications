@@ -6,9 +6,9 @@ export class EventHandler {
 	}
 
 	subscribe(handler) {
-		this.es.onmessage = (event) => {
+		this.es.addEventListener("message", event => {
 			handler("message", event.data)
-		}
+		})
 
 		this.es.addEventListener("service", event => {
 			handler("service", event.data)

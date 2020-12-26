@@ -46,7 +46,7 @@ func TestIndexHandler(t *testing.T) {
 	// Run handler
 	broker := Setup(t)
 	counter := &metrics.Counter{}
-	handler := Mux(broker, counter)
+	handler := Mux("", broker, counter)
 	handler.ServeHTTP(rec, req)
 
 	// Test
@@ -70,7 +70,7 @@ func TestMessageHandler(t *testing.T) {
 
 	data, _ := json.Marshal(payload)
 
-	req, err := http.NewRequest("POST", "/message", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", "/event/message", bytes.NewBuffer(data))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,12 +80,12 @@ func TestMessageHandler(t *testing.T) {
 	// Run handler
 	broker := Setup(t)
 	counter := &metrics.Counter{}
-	handler := Mux(broker, counter)
+	handler := Mux("", broker, counter)
 	handler.ServeHTTP(rec, req)
 
 	// Test
 	if rec.Code != http.StatusNoContent {
-		t.Errorf("Incorrect status code, got %v want %v", rec.Code, http.StatusOK)
+		t.Errorf("Incorrect status code, got %v want %v", rec.Code, http.StatusNoContent)
 	}
 }
 
@@ -97,7 +97,7 @@ func TestMessageHandlerBadRequest(t *testing.T) {
 
 	data, _ := json.Marshal(payload)
 
-	req, err := http.NewRequest("POST", "/message", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", "/event/message", bytes.NewBuffer(data))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,12 +107,12 @@ func TestMessageHandlerBadRequest(t *testing.T) {
 	// Run handler
 	broker := Setup(t)
 	counter := &metrics.Counter{}
-	handler := Mux(broker, counter)
+	handler := Mux("", broker, counter)
 	handler.ServeHTTP(rec, req)
 
 	// Test
 	if rec.Code != http.StatusBadRequest {
-		t.Errorf("This should result in 400, got %v want %v", rec.Code, http.StatusOK)
+		t.Errorf("This should result in 400, got %v want %v", rec.Code, http.StatusBadRequest)
 	}
 
 }
@@ -129,7 +129,7 @@ func TestNotificationsHandler(t *testing.T) {
 	// Run handler
 	broker := Setup(t)
 	counter := &metrics.Counter{}
-	handler := Mux(broker, counter)
+	handler := Mux("", broker, counter)
 	go handler.ServeHTTP(rec, req)
 
 	// Test

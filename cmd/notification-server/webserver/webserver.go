@@ -136,10 +136,18 @@ func (n *NotificationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-func Mux(broker *eventbroker.Broker, counter *metrics.Counter) *http.ServeMux {
+func Mux(webDir string, broker *eventbroker.Broker, counter *metrics.Counter) *http.ServeMux {
+
+	// Static files / UI
+	var handleIndex http.Handler
+	if webDir == "" {
+		handleIndex = &IndexHandler{}
+	} else {
+		html := http.Dir(webDir)
+		handleIndex = http.FileServer(html)
+	}
 
 	// Handlers
-	handleIndex := &IndexHandler{}
 	handleMessage := &MessageHandler{broker}
 	handleNotifications := &NotificationHandler{broker, counter}
 	handleMetrics := &MetricsHandler{counter}
@@ -150,8 +158,8 @@ func Mux(broker *eventbroker.Broker, counter *metrics.Counter) *http.ServeMux {
 	// Register routes
 	mux.Handle("/", handleIndex)
 	mux.Handle("/metrics", handleMetrics)
-	mux.Handle("/message", handleMessage)
-	mux.Handle("/notifications", handleNotifications)
+	mux.Handle("/event/message", handleMessage)
+	mux.Handle("/event/notifications", handleNotifications)
 
 	return mux
 }

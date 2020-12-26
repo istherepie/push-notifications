@@ -47,10 +47,10 @@ module.exports = {
 		port: 9000,
 		historyApiFallback: true,
 		proxy: {
-			"/api": {
+			"/event": {
 				target: process.env.PROXY_SERVER || "http://localhost:8080",
 				pathRewrite: {
-					"^/api" : ""
+					"^/event" : ""
 				}
 			}
     	}

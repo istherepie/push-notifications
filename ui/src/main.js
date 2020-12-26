@@ -30,11 +30,11 @@ window.onload = () => {
 	dom.watch()
 
 	// EventSource API
-	const es = new EventSource("/api/notifications")
+	const es = new EventSource("/event/notifications")
 
 	// Setup Handlers
 	const eventHandler = new EventHandler(es)
-	const messageHandler = new MessageHandler("/api/message")
+	const messageHandler = new MessageHandler("/event/message")
 	const notificationHandler = new NotificationHandler("notification-area")
 
 	// Init App

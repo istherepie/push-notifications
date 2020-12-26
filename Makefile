@@ -7,19 +7,28 @@ current_dir := $(shell pwd)
 # Targets
 .PHONY: test
 
-all: testing clean build
+all: build
 
-test:
-	@echo "Running all tests"
+install-deps:
+	npm --prefix $(current_dir)/ui install
+
+test-frontend: install-deps
+	npm --prefix $(current_dir)/ui test
+
+test-backend:		
 	go clean -testcache
 	go test -v -race github.com/istherepie/push-notifications/eventbroker
 	go test -v github.com/istherepie/push-notifications/cmd/notification-server/webserver
 	go test -v github.com/istherepie/push-notifications/metrics
 
+test: test-frontend test-backend
+	@echo "Running all tests"
+
 build:
 	@echo "Building binaries"
 
 	mkdir $(current_dir)/build
+	go build -o $(current_dir)/build/notification-server $(current_dir)/cmd/notification-server/notification-server.go
 
 clean:
 	@echo "Cleaning up..."
